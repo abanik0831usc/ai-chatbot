@@ -15,6 +15,7 @@ import {
   useState,
 } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
+import Image from "next/image";
 import { useDebounceCallback, useWindowSize } from 'usehooks-ts';
 import type { Document, Vote } from '@/lib/db/schema';
 import { fetcher } from '@/lib/utils';
@@ -64,6 +65,8 @@ function PureBlock({
   reload,
   votes,
   isReadonly,
+  handleGenerateImage,
+  isImageLoading,
 }: {
   chatId: string;
   input: string;
@@ -89,6 +92,8 @@ function PureBlock({
     chatRequestOptions?: ChatRequestOptions,
   ) => Promise<string | null | undefined>;
   isReadonly: boolean;
+  handleGenerateImage: () => void;
+  isImageLoading?: boolean;
 }) {
   const { block, setBlock, metadata, setMetadata } = useBlock();
 
@@ -342,6 +347,7 @@ function PureBlock({
                     append={append}
                     className="bg-background dark:bg-muted"
                     setMessages={setMessages}
+                    handleGenerateImage={handleGenerateImage} 
                   />
                 </form>
               </div>
@@ -454,7 +460,8 @@ function PureBlock({
             </div>
 
             <div className="dark:bg-muted bg-background h-full overflow-y-scroll !max-w-full items-center">
-              <blockDefinition.content
+              {block.kind === "text" || block.kind === "code" ? (
+                <blockDefinition.content
                 title={block.title}
                 content={
                   isCurrentVersion
@@ -472,7 +479,24 @@ function PureBlock({
                 isLoading={isDocumentsFetching && !block.content}
                 metadata={metadata}
                 setMetadata={setMetadata}
-              />
+              />) : null
+              }
+
+            {messages.map((msg, index) =>
+              msg.content.startsWith("http") || msg.content.startsWith("data:image") ? (
+                <div key={index} className="flex justify-center p-4">
+                  <Image
+                    src={msg.content}
+                    alt="Generated Image"
+                    width={512}
+                    height={512}
+                    quality={85}
+                    className="rounded-lg shadow-md"
+                    priority
+                  />
+                </div>
+              ) : null
+            )}
 
               <AnimatePresence>
                 {isCurrentVersion && (

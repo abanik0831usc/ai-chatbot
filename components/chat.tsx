@@ -8,6 +8,7 @@ import useSWR, { useSWRConfig } from 'swr';
 import { ChatHeader } from '@/components/chat-header';
 import type { Vote } from '@/lib/db/schema';
 import { fetcher, generateUUID } from '@/lib/utils';
+import { useGenerateImage } from '@/hooks/useImageGenerator';
 
 import { Block } from './block';
 import { MultimodalInput } from './multimodal-input';
@@ -57,6 +58,8 @@ export function Chat({
     fetcher,
   );
 
+  const { generateImage, isMutating: isImageLoading } = useGenerateImage();
+
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   const isBlockVisible = useBlockSelector((state) => state.isVisible);
 
@@ -89,12 +92,14 @@ export function Chat({
               setInput={setInput}
               handleSubmit={handleSubmit}
               isLoading={isLoading}
+              isImageLoading={isImageLoading}
               stop={stop}
               attachments={attachments}
               setAttachments={setAttachments}
               messages={messages}
               setMessages={setMessages}
-              append={append}
+              append={append} 
+              handleGenerateImage={() => generateImage(id, input, setMessages)}
             />
           )}
         </form>
@@ -106,6 +111,7 @@ export function Chat({
         setInput={setInput}
         handleSubmit={handleSubmit}
         isLoading={isLoading}
+        isImageLoading={isImageLoading}
         stop={stop}
         attachments={attachments}
         setAttachments={setAttachments}
@@ -115,6 +121,7 @@ export function Chat({
         reload={reload}
         votes={votes}
         isReadonly={isReadonly}
+        handleGenerateImage={() => generateImage(id, input, setMessages)}
       />
     </>
   );

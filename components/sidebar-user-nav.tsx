@@ -1,4 +1,5 @@
-'use client';
+import { useAtom } from 'jotai';
+import { backgroundColorAtom } from '@/app/atoms/color';
 import { ChevronUp } from 'lucide-react';
 import Image from 'next/image';
 import type { User } from 'next-auth';
@@ -20,9 +21,10 @@ import {
 
 export function SidebarUserNav({ user }: { user: User }) {
   const { setTheme, theme } = useTheme();
+  const [backgroundColor] = useAtom(backgroundColorAtom);
 
   return (
-    <SidebarMenu>
+    <SidebarMenu style={{ backgroundColor }}>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -35,6 +35,7 @@ function PureMultimodalInput({
   input,
   setInput,
   isLoading,
+  isImageLoading,
   stop,
   attachments,
   setAttachments,
@@ -43,6 +44,7 @@ function PureMultimodalInput({
   append,
   handleSubmit,
   className,
+  handleGenerateImage,
 }: {
   chatId: string;
   input: string;
@@ -64,9 +66,22 @@ function PureMultimodalInput({
     chatRequestOptions?: ChatRequestOptions,
   ) => void;
   className?: string;
+  handleGenerateImage: () => void;
+  isImageLoading?: boolean;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
+
+  const isImagePrompt = (prompt: string) => {
+    return (
+      prompt.toLowerCase().includes("generate an image") ||
+      prompt.toLowerCase().includes("create an image") ||
+      prompt.toLowerCase().includes("draw") ||
+      prompt.toLowerCase().includes("illustrate") ||
+      prompt.toLowerCase().includes("show me a picture of") ||
+      prompt.toLowerCase().includes("ai art of")
+    );
+  };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -118,11 +133,14 @@ function PureMultimodalInput({
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
   const submitForm = useCallback(() => {
-    window.history.replaceState({}, '', `/chat/${chatId}`);
-
-    handleSubmit(undefined, {
-      experimental_attachments: attachments,
-    });
+    if (isImagePrompt(input)) {
+      handleGenerateImage();
+    } else {
+      window.history.replaceState({}, '', `/chat/${chatId}`);
+      handleSubmit(undefined, {
+        experimental_attachments: attachments,
+      });   
+    }
 
     setAttachments([]);
     setLocalStorageInput('');
@@ -131,13 +149,14 @@ function PureMultimodalInput({
     if (width && width > 768) {
       textareaRef.current?.focus();
     }
-  }, [
-    attachments,
-    handleSubmit,
+  }, [input,
     setAttachments,
     setLocalStorageInput,
     width,
+    handleGenerateImage,
     chatId,
+    handleSubmit,
+    attachments
   ]);
 
   const uploadFile = async (file: File) => {
@@ -236,7 +255,7 @@ function PureMultimodalInput({
         value={input}
         onChange={handleInput}
         className={cx(
-          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700',
+          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-background pb-10 dark:border-zinc-700',
           className,
         )}
         rows={2}
