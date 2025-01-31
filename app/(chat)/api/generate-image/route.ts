@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   const { chatId, prompt, n = 1, size = "1024x1024" } = body;
   const session = await auth();
 
-  if (!session || !session.user) {
+  if (!session || !session.user || !session.user.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -27,8 +27,7 @@ export async function POST(req: NextRequest) {
     let chat = await getChatById({ id: chatId });
 
     if (!chat) {
-      console.log(`Chat with ID ${chatId} does not exist, creating one...`);
-      chat = await saveChat({
+      await saveChat({
         id: chatId,
         userId: session.user.id,
         title: prompt,
