@@ -18,7 +18,6 @@ type Tweet = {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function TrendingTweets() {
-  console.log('ok at least i am rendered');
   const { data, error, isLoading } = useSWR("/api/getTweets", fetcher, {
     refreshInterval: 60000,
   });
@@ -49,14 +48,14 @@ export default function TrendingTweets() {
           >
             <div className="flex items-start gap-4 p-3 border rounded-xl">
               <div className="relative size-12 rounded-full overflow-hidden">
-                <Image
+                {/* <Image
                   src={tweet.author?.profile_image_url}
                   alt={tweet.author?.name}
                   width={48}
                   height={48}
                   className="rounded-full"
                   priority
-                />
+                /> */}
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
