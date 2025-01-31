@@ -18,7 +18,7 @@
 }
 
 body {
-    background-color: hsl(var(--background)) !important;
+    background-color: hsl(var(--background));
     transition: background 0.3s ease-in-out;
   }
 

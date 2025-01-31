@@ -14,13 +14,11 @@ export const DraggableColorPicker = () => {
   const nodeRef = useRef(null);
   const { theme } = useTheme();
 
-  // Update the Tailwind CSS variable dynamically
   useEffect(() => {
     document.documentElement.style.setProperty('--background', color);
-    localStorage.setItem(`background-${theme}`, color); // Persist color per theme
+    localStorage.setItem(`background-${theme}`, color);
   }, [color, theme]);
 
-  // Load saved background color when component mounts
   useEffect(() => {
     const savedColor = localStorage.getItem(`background-${theme}`);
     if (savedColor) {
@@ -38,7 +36,6 @@ export const DraggableColorPicker = () => {
       handle=".draggable-handle"
     >
       <div ref={nodeRef} className="fixed z-50 cursor-grab">
-        {/* Toggle Button */}
         <button
           className="p-2 bg-gray-900 text-white rounded-md shadow-md"
           onClick={() => setIsOpen(!isOpen)}
@@ -46,7 +43,6 @@ export const DraggableColorPicker = () => {
           🎨 Pick Color
         </button>
 
-        {/* Color Picker */}
         {isOpen && (
           <div className="absolute top-12 left-0 p-2 bg-white dark:bg-gray-800 rounded-md shadow-lg">
             <SketchPicker
