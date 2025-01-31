@@ -28,6 +28,7 @@ import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { SuggestedActions } from './suggested-actions';
+import TrendingTweets from './TweetFeed';
 import equal from 'fast-deep-equal';
 
 function PureMultimodalInput({
@@ -217,7 +218,7 @@ function PureMultimodalInput({
       {messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
-          <SuggestedActions append={append} chatId={chatId} />
+          <TrendingTweets />
         )}
 
       <input
