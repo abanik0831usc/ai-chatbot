@@ -26,6 +26,7 @@ const PurePreviewMessage = ({
   message,
   vote,
   isLoading,
+  isImageLoading,
   setMessages,
   reload,
   isReadonly,
@@ -34,6 +35,7 @@ const PurePreviewMessage = ({
   message: Message;
   vote: Vote | undefined;
   isLoading: boolean;
+  isImageLoading?: boolean;
   setMessages: (
     messages: Message[] | ((messages: Message[]) => Message[]),
   ) => void;
@@ -256,6 +258,7 @@ const PurePreviewMessage = ({
                 message={message}
                 vote={vote}
                 isLoading={isLoading}
+                isImageLoading={isImageLoading}
               />
             )}
           </div>
@@ -270,6 +273,7 @@ export const PreviewMessage = memo(
   PurePreviewMessage,
   (prevProps, nextProps) => {
     if (prevProps.isLoading !== nextProps.isLoading) return false;
+    if (prevProps.isImageLoading !== nextProps.isImageLoading) return false;
     if (prevProps.message.content !== nextProps.message.content) return false;
     if (
       !equal(
@@ -319,7 +323,7 @@ export const ThinkingMessage = () => {
 
 export const ImageSkeletonLoader = ({ count = 2 }: { count?: number }) => {
   return (
-    <div className="flex flex-row gap-4 p-4 justify-start">
+    <div className="flex flex-row gap-4 p-4 justify-center">
       {Array.from({ length: count }).map((_, index) => (
         <div key={index} className="flex flex-col items-center">
           <div

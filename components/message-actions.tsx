@@ -21,16 +21,18 @@ export function PureMessageActions({
   message,
   vote,
   isLoading,
+  isImageLoading,
 }: {
   chatId: string;
   message: Message;
   vote: Vote | undefined;
   isLoading: boolean;
+  isImageLoading?: boolean;
 }) {
   const { mutate } = useSWRConfig();
   const [_, copyToClipboard] = useCopyToClipboard();
 
-  if (isLoading) return null;
+  if (isLoading || isImageLoading) return null;
   if (message.role === 'user') return null;
   if (message.toolInvocations && message.toolInvocations.length > 0)
     return null;
@@ -167,6 +169,7 @@ export const MessageActions = memo(
   (prevProps, nextProps) => {
     if (!equal(prevProps.vote, nextProps.vote)) return false;
     if (prevProps.isLoading !== nextProps.isLoading) return false;
+    if (prevProps.isImageLoading !== nextProps.isImageLoading) return false;
 
     return true;
   },

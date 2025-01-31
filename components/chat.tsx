@@ -60,6 +60,7 @@ export function Chat({
 
   const { generateImage, isMutating: isImageLoading } = useGenerateImage();
 
+  console.log('hola is image', isImageLoading);
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   const isBlockVisible = useBlockSelector((state) => state.isVisible);
 
@@ -75,6 +76,7 @@ export function Chat({
 
         <Messages
           chatId={id}
+          isImageLoading={isImageLoading}
           isLoading={isLoading}
           votes={votes}
           messages={messages}

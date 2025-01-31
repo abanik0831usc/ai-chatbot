@@ -1,5 +1,5 @@
 import { ChatRequestOptions, Message } from 'ai';
-import { PreviewMessage, ThinkingMessage } from './message';
+import { PreviewMessage, ThinkingMessage, ImageSkeletonLoader } from './message';
 import { useScrollToBottom } from './use-scroll-to-bottom';
 import { Overview } from './overview';
 import { memo } from 'react';
@@ -9,6 +9,7 @@ import equal from 'fast-deep-equal';
 interface MessagesProps {
   chatId: string;
   isLoading: boolean;
+  isImageLoading?: boolean;
   votes: Array<Vote> | undefined;
   messages: Array<Message>;
   setMessages: (
@@ -29,6 +30,7 @@ function PureMessages({
   setMessages,
   reload,
   isReadonly,
+  isImageLoading,
 }: MessagesProps) {
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
@@ -42,6 +44,7 @@ function PureMessages({
 
       {messages.map((message, index) => (
         <PreviewMessage
+          isImageLoading={isImageLoading}
           key={message.id}
           chatId={chatId}
           message={message}
@@ -56,6 +59,8 @@ function PureMessages({
           isReadonly={isReadonly}
         />
       ))}
+
+      {isImageLoading && <ImageSkeletonLoader />}
 
       {isLoading &&
         messages.length > 0 &&
@@ -73,7 +78,7 @@ export const Messages = memo(PureMessages, (prevProps, nextProps) => {
   if (prevProps.isBlockVisible && nextProps.isBlockVisible) return true;
 
   if (prevProps.isLoading !== nextProps.isLoading) return false;
-  if (prevProps.isLoading && nextProps.isLoading) return false;
+  if (prevProps.isImageLoading !== nextProps.isImageLoading) return false;
   if (prevProps.messages.length !== nextProps.messages.length) return false;
   if (!equal(prevProps.messages, nextProps.messages)) return false;
   if (!equal(prevProps.votes, nextProps.votes)) return false;
